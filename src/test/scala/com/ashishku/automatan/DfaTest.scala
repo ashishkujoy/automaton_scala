@@ -25,4 +25,5 @@ class DfaTest extends FunSuite with Matchers {
   test("should reject even number of zeros") {
     dfa.doesAccept("0000") shouldBe false
   }
+
 }
