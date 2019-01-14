@@ -48,5 +48,31 @@ class NfaTest extends FunSpec with Matchers {
       }
 
     }
+
+    describe("doesAccept") {
+      describe("validInput") {
+
+        it("should accept 0") {
+          nfa.doesAccept("0") shouldBe true
+        }
+
+        it("should accept 010") {
+          nfa.doesAccept("010") shouldBe true
+        }
+
+      }
+
+      describe("invalidInput")  {
+
+        it("should reject empty string") {
+          nfa.doesAccept("") shouldBe false
+        }
+
+        it("should reject 01") {
+          nfa.doesAccept("01") shouldBe false
+        }
+      }
+
+    }
   }
 }
