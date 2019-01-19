@@ -1,18 +1,21 @@
 package com.ashishku.automatan
 
+import com.ashishku.automatan.LiveState.create
 import org.scalatest.{FunSuite, Matchers}
 
 class DfaTest extends FunSuite with Matchers {
-  private val states = Seq("q1", "q2")
+  private val stateQ1: LiveState = create("q1")
+  private val stateQ2: LiveState = create("q2")
+  private val states = Seq(stateQ1, stateQ2)
   private val alphabets = Seq("0", "1")
-  private val startState = "q1"
-  private val finalStates = Seq("q2")
-  private val delta = Map(
-    "q1" -> Map("0" -> "q2", "1" -> "q1"),
-    "q2" -> Map("0" -> "q1", "1" -> "q2")
+  private val startState = stateQ1
+  private val finalStates = Seq(stateQ2)
+  private val delta: Map[State, Map[String, State]] = Map(
+    stateQ1 -> Map("0" -> stateQ2, "1" -> stateQ1),
+    stateQ2 -> Map("0" -> stateQ1, "1" -> stateQ2)
   )
 
-  private val dfa = Dfa(states,startState,finalStates,delta)
+  private val dfa = Dfa(states, startState, finalStates, delta)
 
   test("should reject empty string") {
     dfa.doesAccept("") shouldBe false

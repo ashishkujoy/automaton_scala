@@ -1,6 +1,7 @@
 package com.ashishku.automatan
 
-import org.scalatest.{FunSpec, FunSuite, Matchers, WordSpec}
+import com.ashishku.automatan.LiveState.create
+import org.scalatest.{FunSpec, Matchers}
 import play.api.libs.json.Json
 
 import scala.io.Source.fromResource
@@ -16,7 +17,7 @@ class RegressionTest extends FunSpec with Matchers {
 
     dfaTestCases.foreach { dfaTestCase =>
       val tuple = dfaTestCase.tuple.asInstanceOf[DfaTuple]
-      val dfa = Dfa(tuple.states, tuple.`start-state`, tuple.`final-states`, tuple.delta)
+      val dfa = Dfa(tuple.states.map(create), create(tuple.`start-state`), tuple.`final-states`.map(create), tuple.dfaDelta)
 
       describe(dfaTestCase.name) {
 
@@ -60,4 +61,15 @@ class RegressionTest extends FunSpec with Matchers {
     }
 
   }
+
+  implicit class TupleToNfaOrDfaTuple(tuple: DfaTuple) {
+    def dfaDelta: Map[State, Map[String, State]] = {
+      tuple.asInstanceOf[DfaTuple].delta.map { a =>
+        (create(a._1), a._2.map { b =>
+          (b._1, create(b._2))
+        })
+      }
+    }
+  }
+
 }
