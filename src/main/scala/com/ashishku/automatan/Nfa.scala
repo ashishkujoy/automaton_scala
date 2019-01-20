@@ -8,9 +8,9 @@ case class Nfa(
                 delta: Map[String, Map[String, Seq[String]]]
               ) {
   def doesAccept(input: String): Boolean = {
-    val sanitisedInputs = input.trim.replaceAllLiterally("*", "").split("").filter(input => input != "" )
+    val sanitisedInputs = input.trim.replaceAllLiterally("*", "").split("").filter(input => input != "")
     val newStates = sanitisedInputs.foldLeft(coexistingGroupOf(currentState, Seq(currentState))) { (states, input) =>
-      states.flatMap(state => nextStates(state, input))
+      states.flatMap(state => coexistingGroupOf(state).flatMap(s => nextStates(s, input)))
     }
     newStates.exists(state => finalStates.contains(state))
   }
@@ -21,9 +21,8 @@ case class Nfa(
     deltaStates.flatMap(deltaState => coexistingGroupOf(deltaState, excluding :+ state)) :+ state
   }
 
-  def nextStates(state: String, input: String): Seq[String] = {
-    coexistingGroupOf(state)
-      .flatMap(currentState => delta.getOrElse(currentState, Map.empty).getOrElse(input, Seq.empty))
+  def nextStates(currentState: String, input: String): Seq[String] = {
+    delta.getOrElse(currentState, Map.empty).getOrElse(input, Seq.empty)
       .flatMap(state => coexistingGroupOf(state))
   }
 }

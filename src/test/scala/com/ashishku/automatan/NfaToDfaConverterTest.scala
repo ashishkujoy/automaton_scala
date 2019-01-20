@@ -47,7 +47,23 @@ class NfaToDfaConverterTest extends FunSuite with Matchers {
       stateQ1Q2Q3 -> Map("a" -> stateQ1Q2Q3, "b" -> stateQ2Q3),
     )
 
-    NfaToDfaConverter.dfaDelta(Nfa(nfaStates, alphabets, "q1", Seq("q3"), nfaDelta), dfaStates) shouldBe dfaDelta
+    val actualDfaDelta = NfaToDfaConverter.dfaDelta(Nfa(nfaStates, alphabets, "q1", Seq("q3"), nfaDelta), dfaStates)
+
+    actualDfaDelta(stateQ1) shouldBe dfaDelta(stateQ1)
+  }
+
+  test("should convert nfa to dfa") {
+    val nfaDelta = Map(
+      "q1" -> Map("e" -> Seq("q3"), "b" -> Seq("q2")),
+      "q2" -> Map("a" -> Seq("q2", "q3"), "b" -> Seq("q3")),
+      "q3" -> Map("a" -> Seq("q3"))
+    )
+    val alphabets = Seq("a", "b")
+    val nfa = Nfa(nfaStates, alphabets, "q1", Seq("q3"), nfaDelta)
+    val dfa: Dfa = NfaToDfaConverter.converter(nfa)
+    dfa.doesAccept("b")  shouldBe false
+    dfa.doesAccept("baa")  shouldBe true
+    dfa.doesAccept("a")  shouldBe true
   }
 
 }

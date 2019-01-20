@@ -12,6 +12,7 @@ class RegressionTest extends FunSpec with Matchers {
 
   private val dfaTestCases: Seq[TestCase] = testData.testData.filter(_.`type` == "dfa")
   private val nfaTestCases: Seq[TestCase] = testData.testData.filter(_.`type` == "nfa")
+  private val nfaToDfaTestCases: Seq[TestCase] = testData.testData.filter(_.`type` == "nfa-to-dfa")
 
   describe("Dfa") {
 
@@ -56,10 +57,33 @@ class RegressionTest extends FunSpec with Matchers {
             nfa.doesAccept(inValidInput) shouldBe false
           }
         }
-
       }
     }
 
+  }
+
+  describe("NfaToDfa") {
+    nfaToDfaTestCases.foreach { nfaToDfaTestCase =>
+      val tuple = nfaToDfaTestCase.tuple.asInstanceOf[NfaTuple]
+      val nfa = Nfa(tuple.states, tuple.alphabets, tuple.`start-state`, tuple.`final-states`, tuple.delta)
+      val dfa = NfaToDfaConverter.converter(nfa)
+
+      describe(nfaToDfaTestCase.name) {
+
+        nfaToDfaTestCase.`pass-cases`.foreach { validInput =>
+          it(s"$validInput should be accepted") {
+            dfa.doesAccept(validInput) shouldBe true
+          }
+        }
+
+        nfaToDfaTestCase.`fail-cases`.foreach { inValidInput =>
+          it(s"$inValidInput should be rejected") {
+            dfa.doesAccept(inValidInput) shouldBe false
+          }
+        }
+
+      }
+    }
   }
 
   implicit class TupleToNfaOrDfaTuple(tuple: DfaTuple) {
