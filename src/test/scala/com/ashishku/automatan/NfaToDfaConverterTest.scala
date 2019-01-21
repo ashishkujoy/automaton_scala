@@ -25,17 +25,17 @@ class NfaToDfaConverterTest extends FunSuite with Matchers {
   }
 
   test("should give final states for a dfa based on final states of nfa") {
-    val expectedStates = Seq(stateQ1, stateQ1Q2, stateQ1Q3, stateQ1Q2Q3)
+    val expectedStates = List(stateQ1, stateQ1Q2, stateQ1Q3, stateQ1Q2Q3)
     NfaToDfaConverter.dfaFinalStates(dfaStates, List("q1")) should contain theSameElementsAs expectedStates
   }
 
   test("should give delta for dfa for given dfa states and nfa") {
     val nfaDelta = Map(
-      "q1" -> Map("e" -> Seq("q3"), "b" -> Seq("q2")),
-      "q2" -> Map("a" -> Seq("q2", "q3"), "b" -> Seq("q3")),
-      "q3" -> Map("a" -> Seq("q3"))
+      "q1" -> Map("e" -> List("q3"), "b" -> List("q2")),
+      "q2" -> Map("a" -> List("q2", "q3"), "b" -> List("q3")),
+      "q3" -> Map("a" -> List("q3"))
     )
-    val alphabets = Seq("a", "b")
+    val alphabets = List("a", "b")
 
     val dfaDelta = Map(
       stateQ1 -> Map("a" -> DeadState, "b" -> stateQ2),
@@ -47,19 +47,19 @@ class NfaToDfaConverterTest extends FunSuite with Matchers {
       stateQ1Q2Q3 -> Map("a" -> stateQ1Q2Q3, "b" -> stateQ2Q3),
     )
 
-    val actualDfaDelta = NfaToDfaConverter.dfaDelta(Nfa(nfaStates, alphabets, "q1", Seq("q3"), nfaDelta), dfaStates)
+    val actualDfaDelta = NfaToDfaConverter.dfaDelta(Nfa(nfaStates, alphabets, "q1", List("q3"), nfaDelta), dfaStates)
 
     actualDfaDelta(stateQ1) shouldBe dfaDelta(stateQ1)
   }
 
   test("should convert nfa to dfa") {
     val nfaDelta = Map(
-      "q1" -> Map("e" -> Seq("q3"), "b" -> Seq("q2")),
-      "q2" -> Map("a" -> Seq("q2", "q3"), "b" -> Seq("q3")),
-      "q3" -> Map("a" -> Seq("q3"))
+      "q1" -> Map("e" -> List("q3"), "b" -> List("q2")),
+      "q2" -> Map("a" -> List("q2", "q3"), "b" -> List("q3")),
+      "q3" -> Map("a" -> List("q3"))
     )
-    val alphabets = Seq("a", "b")
-    val nfa = Nfa(nfaStates, alphabets, "q1", Seq("q3"), nfaDelta)
+    val alphabets = List("a", "b")
+    val nfa = Nfa(nfaStates, alphabets, "q1", List("q3"), nfaDelta)
     val dfa: Dfa = NfaToDfaConverter.converter(nfa)
     dfa.doesAccept("b")  shouldBe false
     dfa.doesAccept("baa")  shouldBe true

@@ -7,24 +7,24 @@ sealed trait Tuple
 case class TestCase(
                 name: String,
                 `type`: String,
-                `pass-cases`: Seq[String],
-                `fail-cases`: Seq[String],
+                `pass-cases`: List[String],
+                `fail-cases`: List[String],
                 tuple: Tuple
               )
 
 case class NfaTuple(
-                     states: Seq[String],
-                     alphabets: Seq[String],
+                     states: List[String],
+                     alphabets: List[String],
                      `start-state`: String,
-                     `final-states`: Seq[String],
-                     delta: Map[String, Map[String, Seq[String]]]
+                     `final-states`: List[String],
+                     delta: Map[String, Map[String, List[String]]]
                    ) extends Tuple
 
 case class DfaTuple(
-                     states: Seq[String],
-                     alphabets: Seq[String],
+                     states: List[String],
+                     alphabets: List[String],
                      `start-state`: String,
-                     `final-states`: Seq[String],
+                     `final-states`: List[String],
                      delta: Map[String, Map[String, String]]
                    ) extends Tuple
 
@@ -40,8 +40,8 @@ object TestCase {
   implicit val testDataReads: Reads[TestCase] = (json: JsValue) => {
     val name = (json \ "name").as[String]
     val `type` = (json \ "type").as[String]
-    val `pass-cases` = (json \ "pass-cases").as[Seq[String]]
-    val `fail-cases` = (json \ "fail-cases").as[Seq[String]]
+    val `pass-cases` = (json \ "pass-cases").as[List[String]]
+    val `fail-cases` = (json \ "fail-cases").as[List[String]]
     val tuple: Tuple = (json \ "type").get match {
       case JsString("dfa") => (json \ "tuple").as[DfaTuple]
       case _ => (json \ "tuple").as[NfaTuple]
@@ -50,7 +50,7 @@ object TestCase {
   }
 }
 
-case class TestData(testData: Seq[TestCase])
+case class TestData(testData: List[TestCase])
 
 object TestData {
   implicit val testDataJson: Reads[TestData] = Json.reads[TestData]

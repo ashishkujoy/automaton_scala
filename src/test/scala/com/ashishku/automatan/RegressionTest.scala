@@ -10,9 +10,9 @@ class RegressionTest extends FunSpec with Matchers {
   private val source: String = fromResource("testData.json").mkString
   private val testData: TestData = Json.parse(source).as[TestData]
 
-  private val dfaTestCases: Seq[TestCase] = testData.testData.filter(_.`type` == "dfa")
-  private val nfaTestCases: Seq[TestCase] = testData.testData.filter(_.`type` == "nfa")
-  private val nfaToDfaTestCases: Seq[TestCase] = testData.testData.filter(_.`type` == "nfa-to-dfa")
+  private val dfaTestCases: List[TestCase] = testData.testData.filter(_.`type` == "dfa")
+  private val nfaTestCases: List[TestCase] = testData.testData.filter(_.`type` == "nfa")
+  private val nfaToDfaTestCases: List[TestCase] = testData.testData.filter(_.`type` == "nfa-to-dfa")
 
   describe("Dfa") {
 

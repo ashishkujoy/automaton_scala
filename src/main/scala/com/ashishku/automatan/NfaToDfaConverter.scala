@@ -28,8 +28,8 @@ object NfaToDfaConverter {
   }
 
   def converter(nfa: Nfa): Dfa = {
-    val dfaStates = toDfaStates(nfa.states.toList)
-    Dfa((dfaStates), dfaCurrentState(nfa.currentState, nfa), dfaFinalStates(dfaStates, nfa.finalStates.toList), dfaDelta(nfa, dfaStates))
+    val dfaStates = toDfaStates(nfa.states)
+    Dfa(dfaStates, dfaCurrentState(nfa.currentState, nfa), dfaFinalStates(dfaStates, nfa.finalStates), dfaDelta(nfa, dfaStates))
   }
 
   private def nextStateFor(state: State, alphabet: String, nfa: Nfa): State = {
@@ -42,6 +42,6 @@ object NfaToDfaConverter {
   }
 
   private def dfaCurrentState(nfaCurrentState: String, nfa: Nfa): LiveState = {
-    LiveState.create(nfa.coexistingGroupOf(nfaCurrentState).toList)
+    LiveState.create(nfa.coexistingGroupOf(nfaCurrentState))
   }
 }
